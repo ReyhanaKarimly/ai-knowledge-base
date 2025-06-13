@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-multipart
+PyMuPDF
+scikit-learn
+pydantic
+jinja2
+pytest
+httpx
+sentence_transformers

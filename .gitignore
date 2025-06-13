@@ -1,0 +1,17 @@
+# Python
+.pytest_cache
+
+# Virtual Environment
+myenv/
+
+# Database
+*.db
+
+# Uploads
+uploaded_files/
+
+
+
+
+
+

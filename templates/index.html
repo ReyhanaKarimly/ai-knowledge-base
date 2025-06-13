@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Document QA</title>
+</head>
+<body>
+  <h1>Upload a Document</h1>
+  <form id="uploadForm" enctype="multipart/form-data">
+  <input type="file" name="file" accept=".pdf,.txt" required />
+  <button type="submit">Upload</button>
+  </form>
+
+  <h3>Uploaded Files</h3>
+  <button id="toggleFilesBtn" onclick="toggleFiles()">Show Files</button>
+  <ul id="fileList" style="display: none;"></ul>
+  
+
+  <h2>Ask a Question</h2>
+  <input type="text" id="questionInput" placeholder="Enter your question...">
+  <button onclick="askQuestion()">Ask</button>
+
+  <h3>Answer:</h3>
+  <div id="answer" style="white-space: pre-wrap; max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;">
+   
+</div>
+
+<script>
+  document.getElementById('uploadForm').onsubmit = async function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const res = await fetch('/api/files/', {
+      method: 'POST',
+      body: formData
+    });
+    loadFiles(); 
+    alert('File uploaded');
+
+  };
+
+  let filesVisible = false;
+
+  async function loadFiles() {
+    const res = await fetch("/api/files/");
+    const files = await res.json();
+
+    const list = document.getElementById("fileList");
+    list.innerHTML = "";
+
+    if (files.length === 0) {
+      list.innerHTML = "<li>No files uploaded.</li>";
+      return;
+    }
+
+    files.forEach(file => {
+      const li = document.createElement("li");
+      li.textContent = file.filename + " ";
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.onclick = async () => {
+        await fetch(`/api/files/${file.id}/`, { method: "DELETE" });
+        loadFiles(); // refresh list after delete
+      };
+
+      li.appendChild(delBtn);
+      list.appendChild(li);
+    });
+  }
+
+  function toggleFiles() {
+    filesVisible = !filesVisible;
+
+    const list = document.getElementById("fileList");
+    const btn = document.getElementById("toggleFilesBtn");
+
+    if (filesVisible) {
+      list.style.display = "block";
+      btn.textContent = "Hide Files";
+      loadFiles();
+    } else {
+      list.style.display = "none";
+      btn.textContent = "Show Files";
+    }
+  }
+
+  async function askQuestion() {
+    const question = document.getElementById('questionInput').value;
+    const res = await fetch('/api/ask/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question })
+    });
+    const data = await res.json();
+    const formatted = data.answer
+      .match(/[^.!?]+[.!?]*/g)
+      ?.join("<br><br>") || data.answer;
+
+    document.getElementById("answer").innerHTML = formatted;
+  }
+</script>
+</body>
+</html>
