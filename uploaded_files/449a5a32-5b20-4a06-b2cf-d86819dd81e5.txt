@@ -1,0 +1,12 @@
+
+langchain
+pandas
+openai
+matplotlib
+Pillow
+Flask
+Flask-CORS
+pymongo
+langchain-google-genai
+watchdog
+langchain_experimental

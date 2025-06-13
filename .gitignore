@@ -1,5 +1,8 @@
 # Python
-.pytest_cache
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
 
 # Virtual Environment
 myenv/
@@ -7,11 +10,14 @@ myenv/
 # Database
 *.db
 
+# OS / Editor
+.DS_Store
+
 # Uploads
-uploaded_files/
+uploads/
 
+# Jupyter 
+.ipynb_checkpoints/
 
-
-
-
-
+# VS Code
+.vscode/
