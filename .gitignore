@@ -14,7 +14,7 @@ myenv/
 .DS_Store
 
 # Uploads
-uploads/
+uploaded_files/
 
 # Jupyter 
 .ipynb_checkpoints/
