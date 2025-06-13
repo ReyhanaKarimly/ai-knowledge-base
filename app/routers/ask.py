@@ -11,5 +11,5 @@ class Question(BaseModel):
 def ask_question(q: Question):
     answer = answer_question(q.question)
     if not answer:
-        raise HTTPException(status_code=404, detail="No documents available.")
+        raise HTTPException(status_code=404, detail="No data available.")
     return answer

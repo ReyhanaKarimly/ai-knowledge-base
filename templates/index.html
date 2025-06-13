@@ -59,7 +59,7 @@
       delBtn.textContent = "Delete";
       delBtn.onclick = async () => {
         await fetch(`/api/files/${file.id}/`, { method: "DELETE" });
-        loadFiles(); // refresh list after delete
+        loadFiles(); 
       };
 
       li.appendChild(delBtn);
@@ -84,19 +84,34 @@
   }
 
   async function askQuestion() {
-    const question = document.getElementById('questionInput').value;
+  const question = document.getElementById('questionInput').value;
+  const answerDiv = document.getElementById("answer");
+
+  try {
     const res = await fetch('/api/ask/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question })
     });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      answerDiv.innerHTML = `<span style="color: red;">Error: ${errorData.detail}</span>`;
+      return;
+    }
+
     const data = await res.json();
     const formatted = data.answer
       .match(/[^.!?]+[.!?]*/g)
       ?.join("<br><br>") || data.answer;
 
-    document.getElementById("answer").innerHTML = formatted;
+    answerDiv.innerHTML = formatted;
+  } catch (err) {
+    answerDiv.innerHTML = `<span style="color: red;">Error: Could not connect to the server.</span>`;
   }
+}
+
+
 </script>
 </body>
 </html>

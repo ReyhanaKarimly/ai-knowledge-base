@@ -18,7 +18,7 @@ A simple AI-powered Knowledge Base that allows you to upload `.txt` or `.pdf` do
 ## Setup Instructions
 ```bash
 git clone https://github.com/ReyhanaKarimly/ai-knowledge-base.git
-cd ai_knowledge_base
+cd ai-knowledge-base
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt

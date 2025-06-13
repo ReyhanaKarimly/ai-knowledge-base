@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 import os, shutil, uuid
 from app.services.file_processor import extract_text, chunk_text
 from app.db.database import get_db_connection
-from fastapi import BackgroundTasks
+import sqlite3
 
 UPLOAD_DIR = "uploaded_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -43,11 +43,15 @@ def list_files():
     rows = cursor.fetchall()
     return [{"id": row[0], "filename": row[1]} for row in rows]
 
-@router.delete("/{file_id}/")
+
+@router.delete("/{file_id}")
 def delete_file(file_id: str):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM chunks WHERE file_id = ?", (file_id,))
-    cursor.execute("DELETE FROM files WHERE id = ?", (file_id,))
-    conn.commit()
-    return {"deleted": file_id}
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM files WHERE id = ?", (file_id,))
+            cursor.execute("DELETE FROM chunks WHERE file_id = ?", (file_id,))
+            conn.commit()
+    except sqlite3.OperationalError as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    return {"message": "File and related chunks deleted"}
